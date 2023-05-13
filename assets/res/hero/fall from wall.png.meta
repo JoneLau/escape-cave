@@ -1,0 +1,134 @@
+{
+  "ver": "1.0.25",
+  "importer": "image",
+  "imported": true,
+  "uuid": "5da6b300-3c9b-40be-8656-d0af4ad660b4",
+  "files": [
+    ".json",
+    ".png"
+  ],
+  "subMetas": {
+    "6c48a": {
+      "importer": "texture",
+      "uuid": "5da6b300-3c9b-40be-8656-d0af4ad660b4@6c48a",
+      "displayName": "fall from wall",
+      "id": "6c48a",
+      "name": "texture",
+      "userData": {
+        "wrapModeS": "repeat",
+        "wrapModeT": "repeat",
+        "minfilter": "linear",
+        "magfilter": "linear",
+        "mipfilter": "none",
+        "anisotropy": 0,
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "5da6b300-3c9b-40be-8656-d0af4ad660b4",
+        "visible": false
+      },
+      "ver": "1.0.22",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    },
+    "f9941": {
+      "importer": "sprite-frame",
+      "uuid": "5da6b300-3c9b-40be-8656-d0af4ad660b4@f9941",
+      "displayName": "fall from wall",
+      "id": "f9941",
+      "name": "spriteFrame",
+      "userData": {
+        "trimType": "auto",
+        "trimThreshold": 1,
+        "rotated": false,
+        "offsetX": -0.5,
+        "offsetY": 0,
+        "trimX": 0,
+        "trimY": 2,
+        "width": 67,
+        "height": 82,
+        "rawWidth": 68,
+        "rawHeight": 86,
+        "borderTop": 0,
+        "borderBottom": 0,
+        "borderLeft": 0,
+        "borderRight": 0,
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivotX": 0.5,
+        "pivotY": 0.5,
+        "meshType": 0,
+        "vertices": {
+          "rawPosition": [
+            -33.5,
+            -41,
+            0,
+            33.5,
+            -41,
+            0,
+            -33.5,
+            41,
+            0,
+            33.5,
+            41,
+            0
+          ],
+          "indexes": [
+            0,
+            1,
+            2,
+            2,
+            1,
+            3
+          ],
+          "uv": [
+            0,
+            84,
+            67,
+            84,
+            0,
+            2,
+            67,
+            2
+          ],
+          "nuv": [
+            0,
+            0.023255813953488372,
+            0.9852941176470589,
+            0.023255813953488372,
+            0,
+            0.9767441860465116,
+            0.9852941176470589,
+            0.9767441860465116
+          ],
+          "minPos": [
+            -33.5,
+            -41,
+            0
+          ],
+          "maxPos": [
+            33.5,
+            41,
+            0
+          ]
+        },
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "5da6b300-3c9b-40be-8656-d0af4ad660b4@6c48a",
+        "atlasUuid": ""
+      },
+      "ver": "1.0.11",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    }
+  },
+  "userData": {
+    "fixAlphaTransparencyArtifacts": true,
+    "hasAlpha": true,
+    "type": "sprite-frame",
+    "redirect": "5da6b300-3c9b-40be-8656-d0af4ad660b4@f9941"
+  }
+}

@@ -8,14 +8,38 @@
 //  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
 //  - [English] http://www.cocos2d-x.org/docs/creator/en/scripting/life-cycle-callbacks.html
 
-import { Node } from "cc";
+import { Enum, Node } from "cc";
 
-export interface ICarInfo {
-    ID: number;
-    model: string;
-    type: number;
-    num: number;
+// export interface ICarInfo {
+//     ID: number;
+//     model: string;
+//     type: number;
+//     num: number;
+// }
+
+// 怪物类型
+export enum MONSTERTYPE {
+    ONE = 0,
+    TWO = 1,
 }
+
+Enum(MONSTERTYPE);
+
+// 陷进类型
+export enum TRAPTYPE {
+    ONE = 0,
+    TWO = 1,
+}
+
+Enum(TRAPTYPE);
+
+// 路径朝向
+export enum ROAD_DIRECTION {
+    HORIZONTAL = 0,
+    VERTICAL = 1,
+}
+
+Enum(ROAD_DIRECTION);
 
 export class constant {
 
@@ -35,16 +59,35 @@ export class constant {
         // TOOTING2: "tooting2",         //鸣笛声2
     }
 
-    // 路径朝向
-    public static ROAD_DIRECTION = {
-        HORIZONTAL: 0,
-        VERTICAL: 1,
+    public static PLAYER_ANIM = {
+        IDLE: 'idle',
+        HURT: 'hurt',
+        CLIMB: 'climb',
+        RUN: 'run',
+        JUMPFROMWALL: 'jumpFromWall',
+        JUMPFROMGROUND: 'jumpFromGround',
+        FALLFROMGROUND: 'fallFromGround',
+        FALLFROMWALL: 'fallFromWall',
+    }
+
+    public static MONSTER_ANIM = {
+        IDLE: 'idle',
+        CRAWL: 'crawl',
     }
 
     // 怪物移动范围
     public static MonsterMoveRange = 20;
     // 每帧移动距离
     public static MonsterMoveSpeed = 0.1;
+    // 攻击距离
+    public static attackDis = 0;
+    // 攻击距离
+    public static noticeDis = 0;
+    // 探灯半径
+    public static lightDis = 5;
+
+    public static openTest = false;
+
 
 
 }

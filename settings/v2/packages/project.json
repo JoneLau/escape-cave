@@ -5,5 +5,32 @@
       "width": 1280,
       "height": 720
     }
+  },
+  "physics": {
+    "collisionGroups": [
+      {
+        "index": 1,
+        "name": "MONSTER"
+      },
+      {
+        "index": 2,
+        "name": "PLAYER"
+      },
+      {
+        "index": 3,
+        "name": "BULLET"
+      },
+      {
+        "index": 4,
+        "name": "ROAD"
+      }
+    ],
+    "collisionMatrix": {
+      "0": 1,
+      "1": 4,
+      "2": 26,
+      "3": 4,
+      "4": 4
+    }
   }
 }
