@@ -1,7 +1,8 @@
 
-import { _decorator, Component, AudioSource, assert, game } from 'cc';
+import { _decorator, Component, AudioSource, assert, game, find } from 'cc';
 // import { setting } from '../ui/main/setting';
 import { audioManager } from './audioManager';
+import { constant } from './constant';
 const { ccclass, property } = _decorator;
 
 declare const cocosAnalytics: any;
@@ -12,6 +13,17 @@ export class GameRoot extends Component {
     @property(AudioSource)
     private _audioSource: AudioSource = null!;
 
+    @property({
+        tooltip: '怪物移动范围'
+    })
+    MonsterMoveRange = 10;
+    @property({
+        tooltip: '每帧移动距离'
+    })
+    MonsterMoveSpeed = 0.1;
+
+
+
     onLoad () {
         // const audioSource = this.getComponent(AudioSource)!;
         // assert(audioSource);
@@ -20,6 +32,9 @@ export class GameRoot extends Component {
 
         // // init AudioManager
         // audioManager.instance.init(this._audioSource);
+        constant.player = find('player');
+        constant.MonsterMoveRange = this.MonsterMoveRange;
+        constant.MonsterMoveSpeed = this.MonsterMoveSpeed;
     }
 
     onEnable () {
@@ -30,8 +45,6 @@ export class GameRoot extends Component {
     }
 
     start(){
-        if(typeof cocosAnalytics !== 'undefined'){
-            cocosAnalytics.enableDebug(true);
-        }
+
     }
 }

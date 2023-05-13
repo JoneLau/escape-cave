@@ -1,0 +1,44 @@
+{
+    "name": "ccc-devtools",
+    "package_version": 2,
+    "version": "3.0.0",
+    "description": "ccc-devtools 自动安装助手",
+    "author": "Next",
+    "main": "browser.js",
+    "contributions": {
+        "menu": [
+            {
+                "path": "ccc-devtools",
+                "label": "install",
+                "message": "install"
+            },
+            {
+                "path": "ccc-devtools",
+                "label": "uninstall",
+                "message": "uninstall"
+            },
+            {
+                "path": "ccc-devtools",
+                "label": "home",
+                "message": "home"
+            }
+        ],
+        "messages": {
+            "install": {
+                "methods": [
+                    "install"
+                ]
+            },
+            "uninstall": {
+                "methods": [
+                    "uninstall"
+                ]
+            },
+            "home": {
+                "methods": [
+                    "home"
+                ]
+            }
+        }
+    }
+}
