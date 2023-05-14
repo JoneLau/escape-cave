@@ -38,7 +38,7 @@ export class Bullet extends Component {
 
     onBeginContact (selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
         // 只在两个碰撞体开始接触时被调用一次
-        console.log('onBeginContact');
+        // console.log('onBeginContact');
         const boom = poolManager.instance.getNode(this.boom, this.node.parent);
         boom.setPosition(this.node.position);
         poolManager.instance.putNode(this.node);

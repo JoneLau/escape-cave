@@ -41,6 +41,22 @@ export enum ROAD_DIRECTION {
 
 Enum(ROAD_DIRECTION);
 
+// 路径朝向
+export enum COLLIDERTYPE {
+    DEFAULT = 0,
+    MONSTER = 1,
+    PLAYER = 2,
+    BULLET = 3,
+    ROAD = 4,
+}
+
+export enum GAMESTATE {
+    NORMAL = 'normal',
+    START = 'game-start',
+    GAMING = 'gaming',
+    END = 'gameEnd',
+}
+
 export class constant {
 
     public static player: Node = null!;
@@ -67,13 +83,15 @@ export class constant {
         JUMPFROMWALL: 'jumpFromWall',
         JUMPFROMGROUND: 'jumpFromGround',
         FALLFROMGROUND: 'fallFromGround',
-        FALLFROMWALL: 'fallFromWall',
+        FALLFROMWALL: 'fallFromWall'
     }
 
     public static MONSTER_ANIM = {
         IDLE: 'idle',
         CRAWL: 'crawl',
     }
+
+    public static gameState = GAMESTATE.NORMAL;
 
     // 怪物移动范围
     public static MonsterMoveRange = 20;
@@ -87,6 +105,7 @@ export class constant {
     public static bulletMoveSpeed = 5;
 
     public static openTest = false;
+    public static moveStep = 0;
 
 
 

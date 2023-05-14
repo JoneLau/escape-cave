@@ -10,13 +10,19 @@ export class test extends Component {
 
     _keyUp = false;
     _keyDown = false;
+    _deltaTime = 0;
     start() {
-        input.on(Input.EventType.KEY_DOWN, this.keyPressDown, this);
-        input.on(Input.EventType.KEY_UP, this.keyPressUp, this);
+        // input.on(Input.EventType.KEY_DOWN, this.keyPressDown, this);
+        // input.on(Input.EventType.KEY_UP, this.keyPressUp, this);
     }
 
     update(deltaTime: number) {
         pos.set(this.node.position);
+        this._deltaTime += deltaTime;
+        if(this._deltaTime > 2){
+            pos.y +=10;
+            this._deltaTime = 0;
+        }
         if(this._keyUp){
             pos.y += 10;
         }

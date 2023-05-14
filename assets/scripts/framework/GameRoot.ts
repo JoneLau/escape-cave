@@ -1,11 +1,13 @@
 
-import { _decorator, Component, AudioSource, assert, find, randomRangeInt, Node, instantiate, Prefab, Vec3 } from 'cc';
+import { _decorator, Component, AudioSource, assert, find, randomRangeInt, Node, instantiate, Prefab, Vec3, UITransform } from 'cc';
 // import { setting } from '../ui/main/setting';
 import { audioManager } from './audioManager';
 import { MONSTERTYPE, ROAD_DIRECTION, TRAPTYPE, constant } from './constant';
 import { Monster } from '../Monster';
 import { Road } from '../Road';
 import { Trap } from '../Trap';
+import { CameraController } from '../CameraController';
+import { Fly } from '../Fly';
 const { ccclass, property } = _decorator;
 
 
@@ -39,6 +41,9 @@ export class GameRoot extends Component {
         tooltip: '子弹移动速度'
     })
     bulletMoveSpeed = 2;
+
+    @property
+    moveStep = 5;
     @property({
         type: [MONSTERTYPE]
     })
@@ -61,6 +66,12 @@ export class GameRoot extends Component {
     trapRoot: Node = null!;
     @property(Node)
     monsterRoot: Node = null!;
+    @property(Node)
+    flyRoot: Node = null;
+    @property(Prefab)
+    flyPrefab: Prefab = null;
+    @property(Vec3)
+    cameraEndPos = new Vec3();
 
     @property
     openTest = false;
@@ -79,7 +90,11 @@ export class GameRoot extends Component {
         constant.MonsterMoveSpeed = this.monsterMoveSpeed;
         constant.attackDis = this.monsterAttackDis;
         constant.noticeDis = this.monsterNoticeRange;
+        constant.moveStep = this.moveStep;
         constant.openTest = this.openTest;
+
+        const camera = find('Canvas/Camera').getComponent(CameraController);
+        camera.init(this.cameraEndPos);
 
         if(this.openTest){
             // const monsterNode1 = instantiate(this.monsterPrefabList[0]);
@@ -94,7 +109,7 @@ export class GameRoot extends Component {
         }
         // 根据配置初始化数据生成怪物和陷阱
         const roadList: Node[] = [];
-        const childs = this.roadRoot.children;
+        let childs = this.roadRoot.children;
         let i = 0
         for (; i < childs.length; i++) {
             roadList.push(childs[i]);
@@ -112,17 +127,30 @@ export class GameRoot extends Component {
             monster.init(road.getObjPos(), road.direction, road.getObjDir());
             roadList.splice(num, 1);
         }
-        // i = 0;
-        // for (; i < this.trapList.length; i++) {
-        //     const num = randomRangeInt(0, roadList.length);
-        //     const roadNode = roadList[num];
-        //     const road = roadNode.getComponent(Road);
-        //     const trapNode = instantiate(this.trapPrefabList[this.trapList[i]]);
-        //     trapNode.setParent(this.trapRoot);
-        //     const trap = trapNode.getComponent(Trap);
-        //     trap.init(road.getObjPos(), road.direction, road.getObjDir());
-        //     roadList.splice(num, 1);
-        // }
+        i = 0;
+        for (; i < this.trapList.length; i++) {
+            const num = randomRangeInt(0, roadList.length);
+            const roadNode = roadList[num];
+            const road = roadNode.getComponent(Road);
+            const trapNode = instantiate(this.trapPrefabList[this.trapList[i]]);
+            trapNode.setParent(roadNode);
+            const trap = trapNode.getComponent(Trap);
+            trap.init(road.getObjPos(), road.direction, road.getObjDir());
+            roadList.splice(num, 1);
+        }
+
+        // 飞行物
+        childs = this.flyRoot.children;
+        for (; i < childs.length; i++) {
+            const roadNode = childs[i];
+            const roadSize = roadNode.getComponent(UITransform).contentSize;
+            const maxSize = Math.max(roadSize.width, roadSize.height);
+            const isHorizontal = roadSize.width - roadSize.height > 0 ? ROAD_DIRECTION.HORIZONTAL : ROAD_DIRECTION.VERTICAL;
+            const trapNode = instantiate(this.flyPrefab);
+            trapNode.setParent(roadNode);
+            const trap = trapNode.getComponent(Fly);
+            trap.init(maxSize, isHorizontal);
+        }
     }
 
     onEnable () {
