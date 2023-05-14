@@ -1,57 +1,81 @@
-// Learn cc.Class:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/class.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/en/scripting/class.html
-// Learn Attribute:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/reference/attributes.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/en/scripting/reference/attributes.html
-// Learn life-cycle callbacks:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/en/scripting/life-cycle-callbacks.html
-
 import { _decorator } from "cc";
-import { oneToMultiListener } from "./oneToMultiListener";
 const { ccclass, property } = _decorator;
 
 @ccclass("clientEvent")
-export class clientEvent extends oneToMultiListener {
-    static handlers = {};
+export class clientEvent {
+    private static _handlers: { [key: string]: any[] } = {};
 
-    // this.setSupportEventList()
-    
-    // constructor () {
-    //     super();
-        
-    //     this._EVENT_TYPE = [
-    //         "testEvent",
-    //         "onAppShow",
-    //         "onNetworkConnect",
-    //         "hideNetLoading",
-    //         "showNetLoading",
-    //         "showWaiting",          //展示waiting界面
-    //         "hideWaiting",          //隐藏waiting界面
-    //         "showSharedDialog",      //显示单例界面
-    //         "hideSharedDialog",     //隐藏单例弹窗
-    //         "showTips",
-    //         "showGetMoneyTips",
-    //         "activeScene",          //设置场景是否可用
-    //         "pushToPopupSeq",           //创建对话框弹出队列
-    //         "shiftFromPopupSeq",            //从弹出框队列移除
-    //         "onSceneChanged",
+    /**
+     * 监听事件
+     * @param {string} eventName 事件名称
+     * @param {function} handler 监听函数
+     * @param {object} target 监听目标
+     */
+    public static on (eventName: string, handler: Function, target: any) {
+        var objHandler: {} = {handler: handler, target: target};
+        var handlerList: Array<any> = clientEvent._handlers[eventName];
+        if (!handlerList) {
+            handlerList = [];
+            clientEvent._handlers[eventName] = handlerList;
+        }
 
+        for (var i = 0; i < handlerList.length; i++) {
+            if (!handlerList[i]) {
+                handlerList[i] = objHandler;
+                return i;
+            }
+        }
 
-    //         //游戏逻辑相关
-    //         "startGame",            //开始游戏
-    //         "gameOver",             //游戏结束
-    //     ];
+        handlerList.push(objHandler);
 
-    //     this.setSupportEventList(this._EVENT_TYPE);
-    // }
+        return handlerList.length;
+    };
 
-    // start () {
-    //     // Your initialization goes here.
-    // }
+    /**
+     * 取消监听
+     * @param {string} eventName 监听事件
+     * @param {function} handler 监听函数
+     * @param {object} target 监听目标
+     */
+    public static off (eventName: string, handler: Function, target: any) {
+        var handlerList = clientEvent._handlers[eventName];
 
-    // update (deltaTime: number) {
-    //     // Your update function goes here.
-    // }
+        if (!handlerList) {
+            return;
+        }
+
+        for (var i = 0; i < handlerList.length; i++) {
+            var oldObj = handlerList[i];
+            if (oldObj.handler === handler && (!target || target === oldObj.target)) {
+                handlerList.splice(i, 1);
+                break;
+            }
+        }
+    };
+
+    /**
+     * 分发事件
+     * @param {string} eventName 分发事件名
+     * @param  {...any} params 分发事件参数
+     */
+    public static dispatchEvent (eventName: string, ...args: any) {
+        var handlerList = clientEvent._handlers[eventName];
+
+        var args1 = [];
+        var i;
+        for (i = 1; i < arguments.length; i++) {
+            args1.push(arguments[i]);
+        }
+
+        if (!handlerList) {
+            return;
+        }
+
+        for (i = 0; i < handlerList.length; i++) {
+            var objHandler = handlerList[i];
+            if (objHandler.handler) {
+                objHandler.handler.apply(objHandler.target, args1);
+            }
+        }
+    };
 }
