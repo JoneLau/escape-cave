@@ -15,6 +15,9 @@ export class GameRoot extends Component {
     @property(AudioSource)
     private _audioSource: AudioSource = null!;
 
+    @property(Node)
+    player: Node = null;
+
     @property({
         tooltip: '怪物移动范围'
     })
@@ -33,17 +36,17 @@ export class GameRoot extends Component {
     monsterMoveSpeed = 0.1;
 
     @property({
-        tooltip: '探灯半径'
+        tooltip: '子弹移动速度'
     })
-    lightDis = 5;
+    bulletMoveSpeed = 2;
     @property({
         type: [MONSTERTYPE]
     })
     monsterList: MONSTERTYPE[] = [];
     @property({
-        type: [Prefab]
+        type: Prefab
     })
-    monsterPrefabList: Prefab[] = [];
+    monsterPrefab: Prefab = null;
     @property({
         type: [TRAPTYPE]
     })
@@ -71,7 +74,7 @@ export class GameRoot extends Component {
 
         // // init AudioManager
         // audioManager.instance.init(this._audioSource);
-        constant.player = find('Canvas/player');
+        constant.player = this.player;
         constant.MonsterMoveRange = this.monsterMoveRange;
         constant.MonsterMoveSpeed = this.monsterMoveSpeed;
         constant.attackDis = this.monsterAttackDis;
@@ -97,27 +100,29 @@ export class GameRoot extends Component {
             roadList.push(childs[i]);
         }
         i = 0;
+        // this.monsterList.length
         for (; i < this.monsterList.length; i++) {
             const num = randomRangeInt(0, roadList.length);
             const roadNode = roadList[num];
             const road = roadNode.getComponent(Road);
-            const monsterNode = instantiate(this.monsterPrefabList[this.monsterList[i]]);
-            monsterNode.setParent(this.monsterRoot);
+            road.init();
+            const monsterNode = instantiate(this.monsterPrefab);
+            monsterNode.setParent(roadNode);
             const monster = monsterNode.getComponent(Monster);
             monster.init(road.getObjPos(), road.direction, road.getObjDir());
             roadList.splice(num, 1);
         }
-        i = 0;
-        for (; i < this.trapList.length; i++) {
-            const num = randomRangeInt(0, roadList.length);
-            const roadNode = roadList[num];
-            const road = roadNode.getComponent(Road);
-            const trapNode = instantiate(this.trapPrefabList[this.trapList[i]]);
-            trapNode.setParent(this.trapRoot);
-            const trap = trapNode.getComponent(Trap);
-            trap.init(road.getObjPos(), road.direction, road.getObjDir());
-            roadList.splice(num, 1);
-        }
+        // i = 0;
+        // for (; i < this.trapList.length; i++) {
+        //     const num = randomRangeInt(0, roadList.length);
+        //     const roadNode = roadList[num];
+        //     const road = roadNode.getComponent(Road);
+        //     const trapNode = instantiate(this.trapPrefabList[this.trapList[i]]);
+        //     trapNode.setParent(this.trapRoot);
+        //     const trap = trapNode.getComponent(Trap);
+        //     trap.init(road.getObjPos(), road.direction, road.getObjDir());
+        //     roadList.splice(num, 1);
+        // }
     }
 
     onEnable () {

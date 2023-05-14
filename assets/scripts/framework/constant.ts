@@ -83,8 +83,8 @@ export class constant {
     public static attackDis = 0;
     // 攻击距离
     public static noticeDis = 0;
-    // 探灯半径
-    public static lightDis = 5;
+    // 子弹移动速度
+    public static bulletMoveSpeed = 5;
 
     public static openTest = false;
 

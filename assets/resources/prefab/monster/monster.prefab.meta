@@ -2,12 +2,12 @@
   "ver": "1.1.43",
   "importer": "prefab",
   "imported": true,
-  "uuid": "c15270fc-f7c9-472d-984a-683e28590299",
+  "uuid": "366ce2ee-e6c7-4fa2-ab9b-fe2228128909",
   "files": [
     ".json"
   ],
   "subMetas": {},
   "userData": {
-    "syncNodeName": "monsterA"
+    "syncNodeName": "monster"
   }
 }

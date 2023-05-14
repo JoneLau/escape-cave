@@ -24,6 +24,11 @@ export class Road extends Component {
     @property
     fixPos = new Vec3();
 
+    @property({
+        type: Node
+    })
+    pushPos: Node[] = [];
+
     private _objPos= new Vec3();
     private _isLeft = false;
 
@@ -37,40 +42,46 @@ export class Road extends Component {
 
     // 随机当前摆放位置
     init() {
+        // 如果有设置固定摆放位置就用固定摆放位置
         let x = this.fixPos.x;
         let y = this.fixPos.y;
         const dis = Math.sqrt(x * x + y * y);
-        if (dis >= 0) {
+        if (dis > 0) {
             this._objPos.set(this.fixPos);
             return;
         }
 
+        // 没有固定摆放位置就随机位置
+        // 横向随机位置为左右两边随机
+        // 纵向随机位置为左右、上下四边随机，怪物始终朝下
+        // 每个板快 init 之后随机一次位置，不会更改
         const pos = this.node.position;
         let uiTransSize = this.getComponent(UITransform).contentSize;
-        const randomDir = Math.random() >= 0.5 ? 1 : -1;
-        // x = pos.x + uiTransSize.x / 2 * randomDir;
-        // y = pos.y +
-        // if (this.direction === ROAD_DIRECTION.HORIZONTAL) {
-        //     x = pos.x + uiTransSize.x / 2 * randomDir + (-randomDir) * constant.MonsterMoveRange;
-        //     this._objPos.set(x, pos.y + uiTransSize.y / 2, pos.z);
-        // } else {
-        //     this._isLeft = randomDir > 0 ? false : true;
-        //     if(this.onlyOneWay){
-        //         x = this.left ? pos.x - uiTransSize.x / 2 : pos.x + uiTransSize.x;
-        //     }else{
-        //         x = pos.x + uiTransSize.x / 2 * randomDir;
-        //     }
-        //     const randomPos = Math.random() >= 0.5 ? 1 : -1;
-        //     y = pos.y + uiTransSize.y / 2 * randomPos + (-randomPos) * constant.MonsterMoveRange;
-        //     this._objPos.set(x, y, pos.z);
-        // }
-    }
-    start() {
-
+        // 横向位置随机
+        const randomH = Math.random() >= 0.5 ? 1 : -1;
+        if (this.direction === ROAD_DIRECTION.HORIZONTAL) {
+            // 所有的怪物父节点都是板
+            x = uiTransSize.x / 2 * randomH + (-randomH) * constant.MonsterMoveRange;
+            this._objPos.set(x, 0, pos.z);
+        } else {
+            this._isLeft = randomH > 0 ? false : true;
+            // if(this.onlyOneWay){
+            //     x = this.left ? pos.x - uiTransSize.x / 2 : pos.x + uiTransSize.x;
+            // }else{
+                x = uiTransSize.x / 2 * randomH;
+            // }
+            const randomV = Math.random() >= 0.5 ? 1 : -1;
+            y = uiTransSize.y / 2 * randomV + (-randomV) * constant.MonsterMoveRange;
+            this._objPos.set(x, y, pos.z);
+        }
     }
 
-    update(deltaTime: number) {
+    // start() {
 
-    }
+    // }
+
+    // update(deltaTime: number) {
+
+    // }
 }
 
