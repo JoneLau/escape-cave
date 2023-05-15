@@ -62,7 +62,7 @@ export class audioManager {
         assert(audioSource, 'AudioManager not inited!');
 
         //音效一般是多个的，不会只有一个
-        let path = 'gamePackage/audio/sound/';
+        let path = 'audio/sound/';
         // if (name !== 'click') {
         //     path = 'gamePackage/' + path; //微信特殊处理，除一开场的音乐，其余的放在子包里头
         // }
@@ -75,6 +75,30 @@ export class audioManager {
 
             // NOTE: the second parameter is volume scale.
             audioSource.playOneShot(clip, audioSource.volume ? this.soundVolume / audioSource.volume : 0);
+        });
+
+    }
+
+    changeBG (name:string) {
+        const audioSource = audioManager._audioSource!;
+        audioSource.stop();
+        assert(audioSource, 'AudioManager not inited!');
+
+        //音效一般是多个的，不会只有一个
+        let path = 'audio/sound/';
+        // if (name !== 'click') {
+        //     path = 'gamePackage/' + path; //微信特殊处理，除一开场的音乐，其余的放在子包里头
+        // }
+
+        resourceUtil.loadRes(path + name, AudioClip, (err, clip)=> {
+            if (err) {
+                warn('load audioClip failed: ', err);
+                return;
+            }
+
+            // NOTE: the second parameter is volume scale.
+            audioSource.clip = clip;
+            audioSource.play();
         });
 
     }

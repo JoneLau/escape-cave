@@ -1,5 +1,6 @@
-import { _decorator, Animation, Component, Node } from 'cc';
+import { _decorator, Animation, Component, Node, Sprite, SpriteFrame } from 'cc';
 import { poolManager } from './framework/poolManager';
+import { resourceUtil } from './framework/resourceUtil';
 const { ccclass, property } = _decorator;
 
 @ccclass('boom')
@@ -17,8 +18,15 @@ export class boom extends Component {
     }
 
     finished(){
-        this.node.removeFromParent();
-        poolManager.instance.putNode(this.node);
+
+        resourceUtil.loadRes('smoke-1', SpriteFrame ,(err, asset)=>{
+            this.node.removeFromParent();
+            if(!err){
+                this.node.getComponent(Sprite).spriteFrame = asset;
+            }
+            poolManager.instance.putNode(this.node);
+        })
+
 
     }
 

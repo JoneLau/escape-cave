@@ -1,5 +1,5 @@
 import { _decorator, Animation, animation, Component, math, Node, Prefab, resources, UITransform, Vec2, Vec3 } from 'cc';
-import { constant, ROAD_DIRECTION } from './framework/constant';
+import { constant, GAMESTATE, ROAD_DIRECTION } from './framework/constant';
 import { resourceUtil } from './framework/resourceUtil';
 import { poolManager } from './framework/poolManager';
 const { ccclass, property } = _decorator;
@@ -76,6 +76,9 @@ export class Monster extends Component {
     }
 
     update(deltaTime: number) {
+        if(constant.gameState !== GAMESTATE.GAMING){
+            return;
+        }
         // const pos = this.node.position;
         // 处于咆哮状态，暂停运动
         // if(this._inCrawl){

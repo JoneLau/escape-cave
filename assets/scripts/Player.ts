@@ -113,9 +113,10 @@ export class Player extends Component {
             console.log(' reduce  blood');
             clientEvent.dispatchEvent('blood');
             this._anim.play('hurt');
-            this.scheduleOnce(()=>{
+            this._anim.on(Animation.EventType.FINISHED,()=>{
                 this._anim.play('run');
-            }, 0.2);
+                this._anim.off(Animation.EventType.FINISHED);
+            });
         }
     }
 
@@ -130,9 +131,9 @@ export class Player extends Component {
     private _left = false;
     private _right = false;
     protected update(dt: number): void {
-        // if(constant.gameState !== GAMESTATE.GAMING){
-        //     return;
-        // }
+        if(constant.gameState !== GAMESTATE.GAMING){
+            return;
+        }
 
         this._pos.y += constant.moveStep;
 

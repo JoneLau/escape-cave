@@ -10,7 +10,7 @@ export class Bullet extends Component {
 
     @property(Prefab)
     boom: Prefab = null;
-    onEnable() {
+    start() {
 
         this.node.setPosition(Vec3.ZERO);
 
@@ -20,7 +20,7 @@ export class Bullet extends Component {
         }
     }
 
-    onDisable() {
+    onDestroy() {
 
         let collider = this.getComponent(Collider2D);
         if (collider) {

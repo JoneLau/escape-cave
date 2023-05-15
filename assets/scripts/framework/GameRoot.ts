@@ -1,21 +1,22 @@
 
-import { _decorator, Component, AudioSource, assert, find, randomRangeInt, Node, instantiate, Prefab, Vec3, UITransform } from 'cc';
+import { _decorator, Component, AudioSource, assert, find, randomRangeInt, Node, instantiate, Prefab, Vec3, UITransform, Animation } from 'cc';
 // import { setting } from '../ui/main/setting';
 import { audioManager } from './audioManager';
-import { MONSTERTYPE, ROAD_DIRECTION, TRAPTYPE, constant } from './constant';
+import { GAMESTATE, MONSTERTYPE, ROAD_DIRECTION, TRAPTYPE, constant } from './constant';
 import { Monster } from '../Monster';
 import { Road } from '../Road';
 import { Trap } from '../Trap';
 import { CameraController } from '../CameraController';
 import { Fly } from '../Fly';
+import { clientEvent } from './clientEvent';
 const { ccclass, property } = _decorator;
 
 
 @ccclass('GameRoot')
 export class GameRoot extends Component {
 
-    @property(AudioSource)
-    private _audioSource: AudioSource = null!;
+    // @property(AudioSource)
+    // private _audioSource: AudioSource = null!;
 
     @property(Node)
     player: Node = null;
@@ -72,9 +73,19 @@ export class GameRoot extends Component {
     flyPrefab: Prefab = null;
     @property(Vec3)
     cameraEndPos = new Vec3();
+    @property(AudioSource)
+    audioManager: AudioSource = null;
+    @property(Animation)
+    startAnim: Animation = null;
+    @property(Node)
+    endingPos: Node = null;
 
     @property
     openTest = false;
+    @property
+    maxBlood = 6;
+
+    private _blood: number = 0;
 
 
     onLoad () {
@@ -94,7 +105,34 @@ export class GameRoot extends Component {
         constant.openTest = this.openTest;
 
         const camera = find('Canvas/Camera').getComponent(CameraController);
-        camera.init(this.cameraEndPos);
+        camera.init(this.cameraEndPos, this.endingPos.position);;
+
+        // TODO: 监听游戏状态
+        clientEvent.on('game-state', (state: GAMESTATE.NORMAL | GAMESTATE.START | GAMESTATE.GAMING | GAMESTATE.END ) => {
+            switch (state) {
+                case GAMESTATE.START:
+                    this._blood = this.maxBlood;
+                    constant.gameState = GAMESTATE.START;
+                    this.startAnim.play();
+                    this.scheduleOnce(()=>{
+                        clientEvent.dispatchEvent(GAMESTATE.GAMING);
+                        constant.gameState = GAMESTATE.GAMING;
+                    }, 1);
+                    // clientEvent.dispatchEvent(GAMESTATE.GAMING);
+                    // constant.gameState = GAMESTATE.GAMING;
+                    break;
+                default:
+                    break;
+            }
+        }, this);
+        // TODO: 监听伤害
+        clientEvent.on('blood', this.handleBlood, this);
+        // 流程初始开始菜单
+        // clientEvent.dispatchEvent('open-menu', 'start-menu');
+        clientEvent.on(GAMESTATE.GAMING, this.gameStart, this);
+
+        audioManager.instance.init(this.audioManager);
+        audioManager.instance.changeBG('success');
 
         if(this.openTest){
             // const monsterNode1 = instantiate(this.monsterPrefabList[0]);
@@ -127,17 +165,17 @@ export class GameRoot extends Component {
             monster.init(road.getObjPos(), road.direction, road.getObjDir());
             roadList.splice(num, 1);
         }
-        i = 0;
-        for (; i < this.trapList.length; i++) {
-            const num = randomRangeInt(0, roadList.length);
-            const roadNode = roadList[num];
-            const road = roadNode.getComponent(Road);
-            const trapNode = instantiate(this.trapPrefabList[this.trapList[i]]);
-            trapNode.setParent(roadNode);
-            const trap = trapNode.getComponent(Trap);
-            trap.init(road.getObjPos(), road.direction, road.getObjDir());
-            roadList.splice(num, 1);
-        }
+        // i = 0;
+        // for (; i < this.trapList.length; i++) {
+        //     const num = randomRangeInt(0, roadList.length);
+        //     const roadNode = roadList[num];
+        //     const road = roadNode.getComponent(Road);
+        //     const trapNode = instantiate(this.trapPrefabList[this.trapList[i]]);
+        //     trapNode.setParent(roadNode);
+        //     const trap = trapNode.getComponent(Trap);
+        //     trap.init(road.getObjPos(), road.direction, road.getObjDir());
+        //     roadList.splice(num, 1);
+        // }
 
         // 飞行物
         childs = this.flyRoot.children;
@@ -151,6 +189,8 @@ export class GameRoot extends Component {
             const trap = trapNode.getComponent(Fly);
             trap.init(maxSize, isHorizontal);
         }
+
+
     }
 
     onEnable () {
@@ -162,5 +202,18 @@ export class GameRoot extends Component {
 
     start(){
 
+    }
+
+    // TODO: 监听伤害，降低血量
+    handleBlood() {
+        this._blood--;
+        if (this._blood <= 0) {
+            // startMenu、gameSetting、gameMenu gameOver
+            clientEvent.dispatchEvent('open-menu', 'start-menu');
+        }
+    }
+
+    gameStart(){
+        audioManager.instance.changeBG('background');
     }
 }
